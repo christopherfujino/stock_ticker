@@ -1,0 +1,8 @@
+name: data_engine
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0-12.0.dev <4.0.0"
+
+dependencies:
+  meta: any
