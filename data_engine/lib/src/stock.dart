@@ -16,6 +16,10 @@ class Asset {
       name: 'pyramidbusiness',
       valueCents: 10000000, // $100k
     ),
+    Stock(
+      name: 'legitsoft',
+      valueCents: 1000000,
+    ),
   ];
 
   String get value => (valueCents.toDouble() / 100.0).toStringAsFixed(2);
