@@ -3,16 +3,28 @@ import 'package:data_engine/data_engine.dart';
 
 import 'state.dart';
 
-class AssetTableWidget extends StatelessWidget {
+class AssetTableWidget extends StatefulWidget {
   const AssetTableWidget({super.key});
+
+  @override
+  State<AssetTableWidget> createState() => _AssetTableWidgetState();
+}
+
+class _AssetTableWidgetState extends State<AssetTableWidget> {
+  int _sortColumnIndex = 0;
+
+  static void _sort(int columnIndex, bool ascending) {
+    throw 'sort!';
+  }
 
   @override
   Widget build(BuildContext context) {
     final stocks = InheritedState.assetsOf(context);
     return DataTable(
+      sortColumnIndex: _sortColumnIndex,
       columns: const <DataColumn>[
         DataColumn(label: Text('Name')),
-        DataColumn(label: Text('Value')),
+        DataColumn(label: Text('Value'), onSort: _sort),
       ],
       rows: stocks.value.map<DataRow>((Asset asset) {
         return DataRow(cells: <DataCell>[
@@ -20,18 +32,6 @@ class AssetTableWidget extends StatelessWidget {
           DataCell(Text('\$${asset.value}')),
         ]);
       }).toList(),
-      //rows: const <DataRow>[
-      //  DataRow(
-      //    cells: <DataCell>[
-      //      DataCell(
-      //        Text('Alphabet'),
-      //      ),
-      //      DataCell(
-      //        Text('\$12'),
-      //      ),
-      //    ],
-      //  ),
-      //],
     );
   }
 }
