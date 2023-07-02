@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'Cash \$${cash.value}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const StockTableWidget(),
+            const AssetTableWidget(),
             ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
