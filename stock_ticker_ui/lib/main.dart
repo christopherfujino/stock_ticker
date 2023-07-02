@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'src/state.dart';
+import 'src/stock_view.dart';
 
 void main() {
   runApp(
@@ -38,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final cash = InheritedState.cashOf(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -50,12 +52,22 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Cash \$${InheritedState.of(context).cash}',
+              'Cash \$${cash.value}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            TextButton(
-              onPressed: () => InheritedState.of(context).cash += 1,
-              child: const Text('Beg'),
+            const StockTableWidget(),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () => cash.update(cash.value + 1),
+                  child: const Text('Beg'),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('No-op'),
+                ),
+              ],
             ),
           ],
         ),

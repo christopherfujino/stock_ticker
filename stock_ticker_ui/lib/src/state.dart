@@ -15,33 +15,59 @@ class StateWrapper extends StatefulWidget {
 class WrapperState extends State<StateWrapper> {
   WrapperState();
 
-  int cash = 0;
+  int cashValue = 0;
 
   @override
   Widget build(BuildContext context) => InheritedState(
         parent: this,
-        setParentState: setState,
+        cash: Cash(cashValue,
+            (int nextValue) => setState(() => cashValue = nextValue)),
         child: widget.child,
       );
 }
 
-class InheritedState extends InheritedWidget {
+enum StateAspect {
+  cash,
+}
+
+class InheritedState extends InheritedModel<StateAspect> {
   const InheritedState({
     super.key,
     required super.child,
     required this.parent,
-    required this.setParentState,
+    required this.cash,
   });
 
   final WrapperState parent;
-  final void Function(void Function()) setParentState;
 
-  static InheritedState of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<InheritedState>()!;
+  //static InheritedState of(BuildContext context) =>
+  //    context.dependOnInheritedWidgetOfExactType<InheritedState>()!;
 
-  int get cash => parent.cash;
-  set cash(int newCash) => setParentState(() => parent.cash = newCash);
+  static Cash cashOf(BuildContext ctx) {
+    return InheritedModel.inheritFrom<InheritedState>(
+      ctx,
+      aspect: StateAspect.cash,
+    )!
+        .cash;
+  }
+
+  final Cash cash;
 
   @override
   bool updateShouldNotify(InheritedState oldWidget) => true;
+
+  @override
+  bool updateShouldNotifyDependent(
+      InheritedState oldWidget, Set<StateAspect> dependencies) {
+    return dependencies.any((StateAspect aspect) => switch (aspect) {
+          StateAspect.cash => oldWidget.cash.value != cash.value,
+        });
+  }
+}
+
+class Cash {
+  Cash(this.value, this.update);
+
+  final int value;
+  final void Function(int) update;
 }
