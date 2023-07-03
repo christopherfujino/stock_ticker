@@ -3,14 +3,9 @@ import 'package:data_engine/data_engine.dart';
 
 import 'state.dart';
 
-class AssetTableWidget extends StatefulWidget {
+class AssetTableWidget extends StatelessWidget {
   const AssetTableWidget({super.key});
 
-  @override
-  State<AssetTableWidget> createState() => _AssetTableWidgetState();
-}
-
-class _AssetTableWidgetState extends State<AssetTableWidget> {
   @override
   Widget build(BuildContext context) {
     final assets = InheritedState.assetsOf(context);
