@@ -150,12 +150,14 @@ class _TransactionFormState extends State<_TransactionForm> {
                   assert(currentValue != null);
 
                   final previousValue = portfolio.value[widget.asset] ?? 0;
+                  final costCents = currentValue! * widget.asset.valueCents;
+                  assert(cash.valueCents >= costCents);
                   portfolio.value[widget.asset] = previousValue + currentValue!;
                   portfolio.update(portfolio.value);
 
                   // TODO am I mixing dollars and cents?!
                   cash.update(
-                    cash.value - (currentValue! * widget.asset.valueCents),
+                    cash.valueCents - costCents,
                   );
                 },
               ),
@@ -171,7 +173,7 @@ class _TransactionFormState extends State<_TransactionForm> {
 
                   // TODO am I mixing dollars and cents?!
                   cash.update(
-                    cash.value + (currentValue! * widget.asset.valueCents),
+                    cash.valueCents - (currentValue! * widget.asset.valueCents),
                   );
                 },
               ),

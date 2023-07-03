@@ -92,7 +92,7 @@ class InheritedState extends InheritedModel<StateAspect> {
   ) =>
       dependencies.any(
         (StateAspect aspect) => switch (aspect) {
-          StateAspect.cash => oldWidget.cash.value != cash.value,
+          StateAspect.cash => oldWidget.cash.valueCents != cash.valueCents,
           StateAspect.assets => oldWidget.assets != assets,
           StateAspect.portfolio => oldWidget.portfolio != portfolio,
         },
@@ -111,13 +111,13 @@ class Assets {
 }
 
 class Cash {
-  Cash(this.value, this.update);
+  Cash(this.valueCents, this.update);
 
-  final int value;
+  final int valueCents;
   final void Function(int) update;
 
   @override
-  int get hashCode => value;
+  int get hashCode => valueCents;
 
   @override
   operator ==(Object other) {

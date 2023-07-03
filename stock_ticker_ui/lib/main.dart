@@ -45,7 +45,7 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Cash \$${cash.value}',
+              'Cash \$${(cash.valueCents.toDouble() / 100.0).toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const AssetTableWidget(),
@@ -53,7 +53,7 @@ class MyHomePage extends StatelessWidget {
               alignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextButton(
-                  onPressed: () => cash.update(cash.value + 1),
+                  onPressed: () => cash.update(cash.valueCents + 1),
                   child: const Text('Beg'),
                 ),
                 TextButton(
