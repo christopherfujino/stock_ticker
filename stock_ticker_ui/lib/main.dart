@@ -7,13 +7,13 @@ import 'src/stock_view.dart';
 void main() {
   runApp(
     const StateWrapper(
-      child: MyApp(),
+      child: Root(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Root extends StatelessWidget {
+  const Root({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +66,7 @@ class GameView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            'Cash \$${(cash.valueCents.toDouble() / 100.0).toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          const StatsView(),
           const AssetTableWidget(),
           ButtonBar(
             alignment: MainAxisAlignment.center,
@@ -86,6 +83,33 @@ class GameView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class StatsView extends StatelessWidget {
+  const StatsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cash = InheritedState.cashOf(context);
+    final now = InheritedState.nowOf(context);
+    return Table(
+      children: <TableRow>[
+        TableRow(children: <Widget>[
+          const Text('Date', textAlign: TextAlign.right),
+          Text(now.toString()),
+        ]),
+        TableRow(
+          children: <Widget>[
+            const Text('Cash', textAlign: TextAlign.right),
+            Text(
+              '\$${(cash.valueCents.toDouble() / 100.0).toStringAsFixed(2)}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

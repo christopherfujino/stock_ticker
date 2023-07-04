@@ -1,6 +1,9 @@
+import 'package:meta/meta.dart';
+
 /// A particular moment in time.
+@immutable
 class Moment {
-  Moment({
+  const Moment({
     required this.month,
     required this.year,
   });
@@ -28,6 +31,17 @@ class Moment {
         throw UnimplementedError('TODO');
     }
   }
+
+  @override
+  int get hashCode => Object.hashAll(<Object>[year, month]);
+
+  @override
+  bool operator ==(final Object other) =>
+      other is Moment && other.hashCode == hashCode;
+
+  @override
+  String toString() =>
+      '${(month.value + 1).toString().padLeft(2, '0')}-${year.value}';
 }
 
 sealed class TimePart {}
@@ -42,4 +56,6 @@ class Month implements TimePart {
   const Month(this.value) : assert(value < 12 && value >= 0);
 
   final int value;
+
+  static const Month january = Month(0);
 }

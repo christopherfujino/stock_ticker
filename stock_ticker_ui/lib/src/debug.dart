@@ -23,7 +23,7 @@ class DebugView extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: () {
-                cash.update(cash.valueCents + 100 * 1000);
+                cash.update(cash.valueCents + 100 * 10000);
               },
               child: const Text(r'Make it rain ($10k)'),
             ),

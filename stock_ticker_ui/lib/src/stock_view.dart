@@ -41,7 +41,7 @@ class _SortableAssetTableState extends State<_SortableAssetTable> {
             return ascensionMultiplier * (a.name.compareTo(b.name));
           });
         });
-      case 1: // value
+      case 1: // price
         setState(() {
           if (_sortColumnIndex == columnIndex) {
             _ascending = !_ascending;
@@ -90,8 +90,9 @@ class _SortableAssetTableState extends State<_SortableAssetTable> {
       sortAscending: _ascending,
       columns: <DataColumn>[
         DataColumn(label: const Text('Name'), onSort: _sort),
-        DataColumn(label: const Text('Value'), onSort: _sort),
+        DataColumn(label: const Text('Price'), onSort: _sort),
         DataColumn(label: const Text('Shares\nowned'), onSort: _sort),
+        DataColumn(label: const Text('Equity'), onSort: _sort),
         const DataColumn(label: Text('Transaction')),
       ],
       rows: assets.map<DataRow>((Asset asset) {
@@ -99,6 +100,7 @@ class _SortableAssetTableState extends State<_SortableAssetTable> {
           DataCell(Text(asset.name)),
           DataCell(Text('\$${asset.value}')),
           DataCell(Text('${portfolio.value[asset] ?? 'nada'}')),
+          DataCell(Text('\$${(((portfolio.value[asset] ?? 0) * asset.valueCents).toDouble() / 100.0).toStringAsFixed(2)}')),
           DataCell(_TransactionForm(asset)),
         ]);
       }).toList(),

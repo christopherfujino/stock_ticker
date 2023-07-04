@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:data_engine/data_engine.dart';
@@ -17,14 +19,33 @@ class StateWrapper extends StatefulWidget {
 class _WrapperState extends State<StateWrapper> {
   _WrapperState();
 
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer _) => setState(() => moment += const Month(1)),
+    );
+  }
+
+  late final Timer _timer;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+
   int cashValue = 0;
   List<Asset> assets = Asset.defaults;
   var portfolio = <Asset, int>{};
+  Moment moment = const Moment(year: Year(1980), month: Month.january);
 
   @override
   Widget build(BuildContext context) => InheritedState._(
         assets: Assets(
           assets,
+          // TODO this closure could be a method
           (List<Asset> nextAssets) => setState(() => assets = nextAssets),
         ),
         cash: Cash(
@@ -35,6 +56,12 @@ class _WrapperState extends State<StateWrapper> {
             portfolio,
             (Map<Asset, int> nextPortfolio) =>
                 setState(() => portfolio = nextPortfolio)),
+        now: Now(
+          moment,
+          (Moment nextMoment) => setState(
+            () => moment = nextMoment,
+          ),
+        ),
         child: widget.child,
       );
 }
@@ -43,6 +70,7 @@ enum StateAspect {
   cash,
   assets,
   portfolio,
+  now,
 }
 
 class InheritedState extends InheritedModel<StateAspect> {
@@ -52,6 +80,7 @@ class InheritedState extends InheritedModel<StateAspect> {
     required this.cash,
     required this.assets,
     required this.portfolio,
+    required this.now,
   });
 
   static Cash cashOf(BuildContext ctx) {
@@ -78,9 +107,18 @@ class InheritedState extends InheritedModel<StateAspect> {
         .portfolio;
   }
 
+  static Now nowOf(BuildContext ctx) {
+    return InheritedModel.inheritFrom<InheritedState>(
+      ctx,
+      aspect: StateAspect.now,
+    )!
+        .now;
+  }
+
   final Cash cash;
   final Assets assets;
   final Portfolio portfolio;
+  final Now now;
 
   @override
   bool updateShouldNotify(InheritedState oldWidget) => true;
@@ -92,9 +130,10 @@ class InheritedState extends InheritedModel<StateAspect> {
   ) =>
       dependencies.any(
         (StateAspect aspect) => switch (aspect) {
-          StateAspect.cash => oldWidget.cash.valueCents != cash.valueCents,
+          StateAspect.cash => oldWidget.cash != cash,
           StateAspect.assets => oldWidget.assets != assets,
           StateAspect.portfolio => oldWidget.portfolio != portfolio,
+          StateAspect.now => oldWidget.now != now,
         },
       );
 }
@@ -148,4 +187,21 @@ class Portfolio {
   operator ==(Object other) {
     return other is Portfolio && other.hashCode == hashCode;
   }
+}
+
+class Now {
+  const Now(this.value, this.update);
+
+  final Moment value;
+  final void Function(Moment) update;
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Now && other.hashCode == value.hashCode;
+
+  @override
+  String toString() => value.toString();
 }
