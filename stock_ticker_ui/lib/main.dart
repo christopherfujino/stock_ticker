@@ -7,13 +7,13 @@ import 'src/stock_view.dart';
 void main() {
   runApp(
     const StateWrapper(
-      child: Root(),
+      child: App(),
     ),
   );
 }
 
-class Root extends StatelessWidget {
-  const Root({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,34 +23,23 @@ class Root extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const DefaultTabController(
+      home: DefaultTabController(
         length: 2,
-        child: MyHomePage(title: 'Stock Ticker'),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-        bottom: const TabBar(
-          tabs: <Widget>[Text('Market'), Text('Debug')],
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text('Stock Shark'),
+            bottom: const TabBar(
+              tabs: <Widget>[Text('Market'), Text('Debug')],
+            ),
+          ),
+          body: const TabBarView(
+            children: <Widget>[
+              GameView(),
+              DebugView(),
+            ],
+          ),
         ),
-      ),
-      body: const TabBarView(
-        children: <Widget>[
-          GameView(),
-          DebugView(),
-        ],
       ),
     );
   }
