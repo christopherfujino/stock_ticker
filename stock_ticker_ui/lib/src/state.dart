@@ -8,9 +8,11 @@ class StateWrapper extends StatefulWidget {
   const StateWrapper({
     super.key,
     required this.child,
+    this.timerDuration = const Duration(seconds: 2),
   });
 
   final Widget child;
+  final Duration timerDuration;
 
   @override
   State<StateWrapper> createState() => _WrapperState();
@@ -23,18 +25,17 @@ class _WrapperState extends State<StateWrapper> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer _) => setState(() => moment += const Month(1)),
+      widget.timerDuration,
+      (Timer _) => setState(() {
+        moment += const Month(1);
+        for (final asset in assets) {
+          asset.lapseOneMonth();
+        }
+      }),
     );
   }
 
   late final Timer _timer;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
-  }
 
   int cashValue = 0;
   List<Asset> assets = Asset.defaults;
@@ -42,17 +43,22 @@ class _WrapperState extends State<StateWrapper> {
   Moment moment = const Moment(year: Year(1980), month: Month.january);
 
   @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) => InheritedState._(
-        assets: Assets(
+        assets: Assets._(
           assets,
-          // TODO this closure could be a method
           (List<Asset> nextAssets) => setState(() => assets = nextAssets),
         ),
-        cash: Cash(
+        cash: Cash._(
           cashValue,
           (int nextValue) => setState(() => cashValue = nextValue),
         ),
-        portfolio: Portfolio(
+        portfolio: Portfolio._(
             portfolio,
             (Map<Asset, int> nextPortfolio) =>
                 setState(() => portfolio = nextPortfolio)),
@@ -139,18 +145,18 @@ class InheritedState extends InheritedModel<StateAspect> {
 }
 
 class Assets {
-  Assets(
+  Assets._(
     this.value,
     this.update,
   );
 
-  final void Function(List<Asset>) update;
+  final void Function(List<Asset> nextAssets) update;
 
   final List<Asset> value;
 }
 
 class Cash {
-  Cash(this.valueCents, this.update);
+  Cash._(this.valueCents, this.update);
 
   final int valueCents;
   final void Function(int) update;
@@ -165,7 +171,7 @@ class Cash {
 }
 
 class Portfolio {
-  Portfolio(this.value, this.update);
+  Portfolio._(this.value, this.update);
 
   static int nextVersion = 0;
 

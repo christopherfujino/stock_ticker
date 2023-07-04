@@ -84,6 +84,7 @@ class StatsView extends StatelessWidget {
     final cash = InheritedState.cashOf(context);
     final now = InheritedState.nowOf(context);
     return Table(
+      border: TableBorder.all(),
       children: <TableRow>[
         TableRow(children: <Widget>[
           const Text('Date', textAlign: TextAlign.right),
